@@ -1,6 +1,6 @@
 package info.bmdb.controller;
 
-import com.javatechie.service.ChatService;
+import info.bmdb.service.ChatService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

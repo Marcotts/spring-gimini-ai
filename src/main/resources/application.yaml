@@ -7,7 +7,7 @@ spring:
       chat: google-genai
     google:
       genai:
-        api-key:
+        api-key: AIzaSyAbx87XrYbXEE7LNvCM7d2RQd9bSPjWoJI
         chat:
           options:
             response-mime-type: application/json
