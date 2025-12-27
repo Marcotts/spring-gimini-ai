@@ -1,3 +1,3 @@
 # spring-gemini-ai
 
-# Google Ai Studio 
+# Google Ai Studio : https://aistudio.google.com/
