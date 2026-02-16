@@ -15,6 +15,8 @@ public class ChatService {
     public String ask(String prompt){
         return chatClient
                 .prompt(prompt)
+                .tools(new AnimalsService())
+                .tools(new DateTimeTools())
                 .call()
                 .content();
     }
