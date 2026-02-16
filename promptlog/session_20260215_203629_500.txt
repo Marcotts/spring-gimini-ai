@@ -1,0 +1,47 @@
+=== SESSION ===
+Title: 15/02/2026 20:36:00
+StartedAt: 2026-02-15T20:36:00.426 (epoch 1771205760426)
+FinishedAt: 2026-02-15T20:36:29.492 (epoch 1771205789492)
+Messages: 4
+
+--- USER @ 2026-02-15T20:36:09.294 ---
+D'ou viens-tu
+
+--- AI @ 2026-02-15T20:36:10.307 ---
+[
+  {
+    "response": "I am a large language model, trained by Google."
+  }
+]
+
+--- USER @ 2026-02-15T20:36:21.657 ---
+Tu es un produit de ?
+
+--- AI @ 2026-02-15T20:36:22.269 ---
+[
+  "Je suis un grand modèle de langage, entraîné par Google."
+]
+
+=== RAW JSON ===
+{
+  "startedAt" : 1771205760426,
+  "finishedAt" : 1771205789492,
+  "messages" : [ {
+    "role" : "user",
+    "content" : "D'ou viens-tu",
+    "ts" : 1771205769294
+  }, {
+    "role" : "ai",
+    "content" : "[\n  {\n    \"response\": \"I am a large language model, trained by Google.\"\n  }\n]",
+    "ts" : 1771205770307
+  }, {
+    "role" : "user",
+    "content" : "Tu es un produit de ?",
+    "ts" : 1771205781657
+  }, {
+    "role" : "ai",
+    "content" : "[\n  \"Je suis un grand modèle de langage, entraîné par Google.\"\n]",
+    "ts" : 1771205782269
+  } ],
+  "title" : "15/02/2026 20:36:00"
+}

@@ -1,0 +1,61 @@
+=== SESSION ===
+Title: 15/02/2026 20:34:30
+StartedAt: 2026-02-15T20:34:30.222 (epoch 1771205670222)
+FinishedAt: 2026-02-15T20:35:30.630 (epoch 1771205730630)
+Messages: 6
+
+--- USER @ 2026-02-15T20:34:39.871 ---
+Qui es-tu
+
+--- AI @ 2026-02-15T20:34:49.208 ---
+{
+"response":"I am a large language model, built by Google."
+}
+
+--- USER @ 2026-02-15T20:35:07.282 ---
+Identifi tous tes tools
+
+--- AI @ 2026-02-15T20:35:10.279 ---
+["chercheunpoisson","setAlarm","chercheHeureouDate","getCurrentDateTime"]
+
+--- USER @ 2026-02-15T20:35:21.633 ---
+Il est quelle heure exactement
+
+--- AI @ 2026-02-15T20:35:22.181 ---
+[
+  {
+    "getCurrentDateTime": {}
+  }
+]
+
+=== RAW JSON ===
+{
+  "startedAt" : 1771205670222,
+  "finishedAt" : 1771205730630,
+  "messages" : [ {
+    "role" : "user",
+    "content" : "Qui es-tu",
+    "ts" : 1771205679871
+  }, {
+    "role" : "ai",
+    "content" : "{\n\"response\":\"I am a large language model, built by Google.\"\n}",
+    "ts" : 1771205689208
+  }, {
+    "role" : "user",
+    "content" : "Identifi tous tes tools",
+    "ts" : 1771205707282
+  }, {
+    "role" : "ai",
+    "content" : "[\"chercheunpoisson\",\"setAlarm\",\"chercheHeureouDate\",\"getCurrentDateTime\"]",
+    "ts" : 1771205710279
+  }, {
+    "role" : "user",
+    "content" : "Il est quelle heure exactement",
+    "ts" : 1771205721633
+  }, {
+    "role" : "ai",
+    "content" : "[\n  {\n    \"getCurrentDateTime\": {}\n  }\n]",
+    "ts" : 1771205722181
+  } ],
+  "title" : "15/02/2026 20:34:30"
+}
