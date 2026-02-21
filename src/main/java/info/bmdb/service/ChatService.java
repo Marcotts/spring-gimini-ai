@@ -21,12 +21,9 @@ public class ChatService {
                 .content();
 
         // Fallback: if the model returned a tool-call JSON instead of executing it, execute locally for time queries
-        if (content != null && content.contains("getCurrentDateTime")) {
-            // Execute tool locally and return human-friendly text
-            return new DateTimeTools().getCurrentDateTime();
-        }
-        if (content != null && content.contains("chercheHeureouDate")) {
-            return new DateTimeTools().chercheHeureouDate();
+        if (content != null && content.contains("dateTimeNow")) {
+            // Execute unified tool locally and return human-friendly text
+            return new DateTimeTools().dateTimeNow(null);
         }
         return content;
     }

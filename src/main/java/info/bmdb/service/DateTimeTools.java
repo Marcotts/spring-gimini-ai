@@ -11,22 +11,16 @@ import java.util.Locale;
 
 public class DateTimeTools {
 
-    @Tool(description = "Cherche la date ou l'heure actuellement (présentation humaine)")
-    public String chercheHeureouDate() {
+    @Tool(description = "FR: Donne la date et l'heure actuelles (présentation humaine). EN: Get the current date and time (human friendly). Paramètre/Parameter (optional): 'locale' (e.g. 'fr-FR', 'en-US').")
+    public String dateTimeNow(String locale) {
         ZoneId zone = LocaleContextHolder.getTimeZone().toZoneId();
+        Locale loc = (locale == null || locale.isBlank()) ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(locale);
         ZonedDateTime now = LocalDateTime.now().atZone(zone);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm:ss (VV)", Locale.FRENCH);
-        return "Nous sommes le " + now.format(fmt) + ".";
-    }
-
-    @Tool(description = "Get the current date and time in the user's timezone (human friendly)")
-    public String getCurrentDateTime() {
-        ZoneId zone = LocaleContextHolder.getTimeZone().toZoneId();
-        ZonedDateTime now = LocalDateTime.now().atZone(zone);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm:ss z (VV)", Locale.ENGLISH);
-        String message = "Current date and time: " + now.format(fmt);
-        System.out.println(message);
-        return message;
+        boolean fr = loc != null && "fr".equalsIgnoreCase(loc.getLanguage());
+        DateTimeFormatter fmt = fr
+                ? DateTimeFormatter.ofPattern("EEEE d MMMM yyyy 'à' HH:mm:ss (VV)", Locale.FRENCH)
+                : DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm:ss z (VV)", Locale.ENGLISH);
+        return fr ? ("Nous sommes le " + now.format(fmt) + ".") : ("Current date and time: " + now.format(fmt));
     }
 
     @Tool(description = "Set a user alarm for the given time, provided in ISO-8601 format")
