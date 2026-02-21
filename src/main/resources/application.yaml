@@ -9,8 +9,7 @@ spring:
       genai:
         api-key: ${GOOGLE_GENAI_API_KEY}
         chat:
-          options:
-            response-mime-type: application/json
+          options: { }
 
 server:
   port: 9191

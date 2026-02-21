@@ -13,11 +13,21 @@ public class ChatService {
     }
 
     public String ask(String prompt){
-        return chatClient
+        String content = chatClient
                 .prompt(prompt)
                 .tools(new AnimalsService())
                 .tools(new DateTimeTools())
                 .call()
                 .content();
+
+        // Fallback: if the model returned a tool-call JSON instead of executing it, execute locally for time queries
+        if (content != null && content.contains("getCurrentDateTime")) {
+            // Execute tool locally and return human-friendly text
+            return new DateTimeTools().getCurrentDateTime();
+        }
+        if (content != null && content.contains("chercheHeureouDate")) {
+            return new DateTimeTools().chercheHeureouDate();
+        }
+        return content;
     }
 }
