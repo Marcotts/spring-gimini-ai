@@ -21,8 +21,10 @@ public class ChatController {
     }
 
     @GetMapping("/chat")
-    public String chat(@RequestParam String prompt, @RequestParam(name = "log", required = false, defaultValue = "false") boolean log) {
-        String response = chatService.ask(prompt);
+    public String chat(@RequestParam String prompt,
+                       @RequestParam(name = "log", required = false, defaultValue = "false") boolean log,
+                       @RequestParam(name = "sessionId", required = false) String sessionId) {
+        String response = chatService.ask(prompt, sessionId);
         // Optional per-prompt persistence (disabled by default)
         if (log) {
             promptLogService.saveInteraction(prompt, response);
