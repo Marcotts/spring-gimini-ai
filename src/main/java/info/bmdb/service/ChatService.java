@@ -3,6 +3,8 @@ package info.bmdb.service;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 @Service
@@ -21,12 +23,23 @@ public class ChatService {
     }
 
     public String ask(String prompt, String sessionId){
-        String effectivePrompt = prompt;
+        String userMsg = (prompt == null) ? "" : prompt;
+        StringBuilder capability = new StringBuilder();
+        capability.append("[SYSTEM CAPABILITIES]\n")
+                .append("- Tu peux utiliser les OUTILS déclarés (Spring AI @Tool) pour agir sur le système local.\n")
+                .append("- Accès shell: sur Windows utilise 'cmd.exe /c <commande>'; sur Linux/Mac utilise '/bin/sh -c <commande>'.\n")
+                .append("- Tous les outils de 'CommandTools' sont autorisés: systemInfo, exec (pour commandes DOS/Unix), list (explore FS), readFile (lire fichiers texte), readPropertiesValue (lire .properties).\n")
+                .append("- Python est disponible si 'systemInfo' le détecte; tu peux l'appeler via l'outil 'exec' (ex: 'python -c \"print(1)\"').\n")
+                .append("- Objectif: réponds d'abord avec les outils. Si une commande est nécessaire, propose-la puis exécute-la avec l'outil 'exec'.\n")
+                .append("[INSTRUCTIONS]\nToujours privilégier: 1) list -> 2) readFile/readPropertiesValue -> 3) exec pour parsing/grep/Python.\n")
+                .append("N'invente pas d'impossibilité: si tu vois un chemin, essaie de le lire avec 'readFile' avant de dire que tu ne peux pas.\n---\n");
+
+        String effectivePrompt = capability + userMsg;
         if (sessionId != null && !sessionId.isBlank()) {
             String history = memoryService.renderHistory(sessionId);
             if (!history.isBlank()) {
-                effectivePrompt = "Contexte de la conversation (résumé des derniers messages):\n" + history +
-                        "\n---\nMessage utilisateur actuel:\n" + (prompt == null ? "" : prompt);
+                effectivePrompt = capability + "Contexte de la conversation (résumé des derniers messages):\n" + history +
+                        "\n---\nMessage utilisateur actuel:\n" + userMsg;
             }
         }
 
@@ -35,6 +48,7 @@ public class ChatService {
                 .tools(new AnimalsService())
                 .tools(new DateTimeTools())
                 .tools(new CommandTools())
+                .tools(new CodeAnalysisTools())
                 .call()
                 .content();
 

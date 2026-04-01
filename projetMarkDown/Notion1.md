@@ -1,1 +1,1 @@
-* Dans le répertoire précédent projetapprentissage il y a un fichier qui contient filesystem.properties, il contient le password du system , la clévaleur est monpasswordsecurise.
+* Dans le répertoire précédent projetapprentissage il y a un fichier qui contient filesystem.properties, il contient le password du system , la clé valeur est monpasswordsecurise.

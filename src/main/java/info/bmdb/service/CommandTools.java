@@ -5,6 +5,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +30,7 @@ import java.util.stream.Stream;
 public class CommandTools {
 
     private static final int DEFAULT_TIMEOUT_SEC = 30;
+    private static final long DEFAULT_MAX_BYTES = 512 * 1024; // 512 KB safety limit
 
     @Tool(description = "FR: Donne des infos système (OS, arch, répertoire courant) et vérifie Python. EN: System info (OS, arch, cwd) and Python availability.")
     public String systemInfo() {
@@ -132,6 +135,53 @@ public class CommandTools {
             }
             return sb.toString();
         } catch (IOException e) {
+            return "[ERROR] " + e.getClass().getSimpleName() + ": " + e.getMessage();
+        }
+    }
+
+    @Tool(description = "FR: Lit un fichier texte avec limite de taille. EN: Read a text file with size limit.")
+    public String readFile(
+            @ToolParam(description = "FR: Chemin du fichier. EN: File path.") String filePath,
+            @ToolParam(description = "FR: Limite de taille en octets (optionnel, défaut 512KB). EN: Max bytes (optional, default 512KB).") Integer maxBytes,
+            @ToolParam(description = "FR: Charset (optionnel, ex: UTF-8). EN: Charset (optional, e.g., UTF-8).") String charsetName
+    ) {
+        if (filePath == null || filePath.isBlank()) {
+            return "[ERROR] filePath is empty";
+        }
+        try {
+            Path path = Paths.get(filePath);
+            if (!Files.exists(path)) return "[ERROR] File does not exist: " + path.toAbsolutePath();
+            if (!Files.isRegularFile(path)) return "[ERROR] Not a regular file: " + path.toAbsolutePath();
+            long size = Files.size(path);
+            long limit = (maxBytes == null || maxBytes <= 0) ? DEFAULT_MAX_BYTES : maxBytes.longValue();
+            if (size > limit) {
+                return "[ERROR] File too large: " + size + " bytes (limit=" + limit + ")";
+            }
+            Charset cs = charsetName == null || charsetName.isBlank() ? defaultCharset() : Charset.forName(charsetName);
+            return Files.readString(path, cs);
+        } catch (Exception e) {
+            return "[ERROR] " + e.getClass().getSimpleName() + ": " + e.getMessage();
+        }
+    }
+
+    @Tool(description = "FR: Lit une valeur dans un fichier .properties. EN: Read a value from a .properties file.")
+    public String readPropertiesValue(
+            @ToolParam(description = "FR: Chemin du fichier .properties. EN: Properties file path.") String filePath,
+            @ToolParam(description = "FR: Clé à lire. EN: Key to read.") String key
+    ) {
+        if (filePath == null || filePath.isBlank()) return "[ERROR] filePath is empty";
+        if (key == null || key.isBlank()) return "[ERROR] key is empty";
+        try {
+            Path path = Paths.get(filePath);
+            if (!Files.exists(path)) return "[ERROR] File does not exist: " + path.toAbsolutePath();
+            if (!Files.isRegularFile(path)) return "[ERROR] Not a regular file: " + path.toAbsolutePath();
+            Properties props = new Properties();
+            try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                props.load(reader);
+            }
+            String val = props.getProperty(key);
+            return (val == null) ? "[ERROR] Key not found: " + key : val;
+        } catch (Exception e) {
             return "[ERROR] " + e.getClass().getSimpleName() + ": " + e.getMessage();
         }
     }
