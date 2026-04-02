@@ -10,8 +10,6 @@ import org.springframework.ai.chat.client.advisor.ToolCallAdvisor;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 
 @Service
@@ -23,12 +21,12 @@ public class ChatService {
     public ChatService(ChatClient.Builder geminiChatClientBuilder, ConversationMemoryService memoryService) {
         this.chatClient = geminiChatClientBuilder
                 .defaultSystem("""
-                    You are a helpful coding assistant. You have access to tools 
-                    for reading files, searching code, running shell commands, 
-                    and editing files. Use them to help the user with their codebase.
-                    
-                    Current directory: %s
-                    """.formatted(System.getProperty("user.dir")))
+                        You are a helpful coding assistant. You have access to tools
+                        for reading files, searching code, running shell commands,
+                        and editing files. Use them to help the user with their codebase.
+                        
+                        Current directory: %s
+                        """.formatted(System.getProperty("user.dir")))
                 .defaultTools(
                         FileSystemTools.builder().build(),
                         GrepTool.builder().build(),
@@ -45,11 +43,8 @@ public class ChatService {
         this.memoryService = memoryService;
     }
 
-    public String ask(String prompt){
-        return ask(prompt, null);
-    }
 
-    public String ask(String prompt, String sessionId){
+    public String ask(String prompt, String sessionId) {
         String userMsg = (prompt == null) ? "" : prompt;
         StringBuilder capability = new StringBuilder();
         capability.append("[SYSTEM CAPABILITIES]\n")
