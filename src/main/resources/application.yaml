@@ -1,15 +1,17 @@
 spring:
+  config:
+    import: "optional:file:.env[.properties]"
   application:
     name: spring-gemini-ai
 
   ai:
-    model:
-      chat: google-genai
     google:
       genai:
         api-key: ${GOOGLE_GENAI_API_KEY}
-        chat:
-          options: { }
+        project-id: ${GOOGLE_PROJECT_ID}
+#        chat:
+#          options:
+#            model: gemini-3-flash-preview
 
 server:
   port: 9191

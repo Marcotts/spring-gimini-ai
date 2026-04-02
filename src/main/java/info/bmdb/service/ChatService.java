@@ -1,6 +1,13 @@
 package info.bmdb.service;
 
+import org.springaicommunity.agent.tools.FileSystemTools;
+import org.springaicommunity.agent.tools.GlobTool;
+import org.springaicommunity.agent.tools.GrepTool;
+import org.springaicommunity.agent.tools.ShellTools;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.ToolCallAdvisor;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
@@ -14,7 +21,27 @@ public class ChatService {
     private final ConversationMemoryService memoryService;
 
     public ChatService(ChatClient.Builder geminiChatClientBuilder, ConversationMemoryService memoryService) {
-        this.chatClient = geminiChatClientBuilder.build();
+        this.chatClient = geminiChatClientBuilder
+                .defaultSystem("""
+                    You are a helpful coding assistant. You have access to tools 
+                    for reading files, searching code, running shell commands, 
+                    and editing files. Use them to help the user with their codebase.
+                    
+                    Current directory: %s
+                    """.formatted(System.getProperty("user.dir")))
+                .defaultTools(
+                        FileSystemTools.builder().build(),
+                        GrepTool.builder().build(),
+                        GlobTool.builder().build(),
+                        ShellTools.builder().build()
+                )
+                .defaultAdvisors(
+                        ToolCallAdvisor.builder().conversationHistoryEnabled(false).build(),
+                        MessageChatMemoryAdvisor.builder(
+                                MessageWindowChatMemory.builder().maxMessages(50).build()
+                        ).build()
+                )
+                .build();
         this.memoryService = memoryService;
     }
 
