@@ -14,33 +14,35 @@ Un mini-projet Spring Boot + Spring AI (Google Gemini) avec une interface web de
 - Java 21+
 - Maven 3.9+
 - Une clé API Google AI Studio (Gemini): https://aistudio.google.com/
+- Et ici pour voir le project ID: https://console.cloud.google.com/
 
 ## Configuration de la clé API
-Vous pouvez fournir la clé via `application.yaml` ou via un fichier `.env` (grâce à la dépendance `spring-dotenv`).
+Vous pouvez fournir la clé via `application.yaml` ou via un fichier `.env` (grâce à la dépendance `spring:config:import: "optional:file:.env[.properties]"`).
 
 1) Via `src/main/resources/application.yaml` (exemple):
 ```yaml
 spring:
   ai:
     google:
-      ai:
-        api-key: ${GEMINI_API_KEY:}
+      genai:
+        api-key: ${GOOGLE_GENAI_API_KEY}
+        project-id: ${GOOGLE_PROJECT_ID}
 ```
 2) Ou via un fichier `.env` à la racine du projet (non commité):
 ```dotenv
 GEMINI_API_KEY=ai-xxxxxxxxxxxxxxxxxxxxxxxx
 ```
-> Astuce: Ajoutez `.env` et `promptlog/` à votre `.gitignore` si nécessaire.
+> Astuce: Ajoutez `.env` et `/promptlog/` à votre `.gitignore` si nécessaire.
 
 ## Démarrer l’application
 ```bash
 mvn spring-boot:run
 ```
-- Par défaut: http://localhost:8080/
+- Par défaut: http://localhost:9191/
 - L’UI de chat est servie par `src/main/resources/static/index.html`.
 
 ## Utilisation (UI de chat)
-1. Ouvrez http://localhost:8080/
+1. Ouvrez http://localhost:9191/
    2. ![Ecran Principale.png](Ecran%20Principale.png)
 2. Saisissez un prompt dans la zone en bas et appuyez sur « Envoyer » (Entrée envoie, Maj+Entrée ajoute une ligne).
 3. Pendant le traitement, un indicateur (« 3 points » + spinner) apparaît.
@@ -79,10 +81,10 @@ En option, vous pouvez aussi logger chaque interaction au fil de l’eau avec `G
 Exemples:
 ```bash
 # Appel simple
-curl -G "http://localhost:8080/api/ai/chat" --data-urlencode "prompt=Donne-moi 3 animaux marins."
+curl -G "http://localhost:9191/api/ai/chat" --data-urlencode "prompt=Donne-moi 3 animaux marins."
 
 # Avec log serveur immédiat
-curl -G "http://localhost:8080/api/ai/chat" --data-urlencode "prompt=Explique la POO en 2 phrases" --data-urlencode "log=true"
+curl -G "http://localhost:9191/api/ai/chat" --data-urlencode "prompt=Explique la POO en 2 phrases" --data-urlencode "log=true"
 ```
 
 ### 2) Sauvegarde de session
@@ -103,7 +105,7 @@ curl -G "http://localhost:8080/api/ai/chat" --data-urlencode "prompt=Explique la
 
 Exemple cURL:
 ```bash
-curl -X POST http://localhost:8080/api/ai/sessions \
+curl -X POST http://localhost:9191/api/ai/sessions \
   -H "Content-Type: application/json" \
   -d @- <<'JSON'
 {
@@ -119,8 +121,8 @@ JSON
 ```
 
 ## Documentation intégrée
-- HTML: `http://localhost:8080/README.md` (rendu automatiquement en HTML par le serveur)
-- Markdown brut: `http://localhost:8080/README.md?raw=true` ou header `Accept: text/markdown`
+- HTML: `http://localhost:9191/README.md` (rendu automatiquement en HTML par le serveur)
+- Markdown brut: `http://localhost:9191/README.md?raw=true` ou header `Accept: text/markdown`
 
 ## Captures d’écran (screenshots)
 Pour illustrer la documentation, placez vos captures dans le dossier suivant du projet:
